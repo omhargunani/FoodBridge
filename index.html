@@ -1,0 +1,936 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#176b45">
+
+
+    <title>FoodBridge | Community Food Waste Reduction</title>
+
+
+    <link rel="stylesheet"
+
+          href="{{ url_for('static', filename='style.css') }}">
+
+
+    <style>
+
+        /* Logout button */
+
+        .logout-container {
+
+            padding: 12px 16px;
+
+            margin-top: 12px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+        }
+
+
+        #logout-btn {
+
+            width: 100%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            padding: 12px 16px;
+
+            background: #dc2626;
+
+            color: #ffffff;
+
+            border: none;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: background 0.2s ease, transform 0.2s ease;
+
+        }
+
+
+        #logout-btn:hover {
+
+            background: #b91c1c;
+
+            transform: translateY(-1px);
+
+        }
+
+
+        #logout-btn:disabled {
+
+            opacity: 0.65;
+
+            cursor: wait;
+
+            transform: none;
+
+        }
+
+
+
+
+
+        /* Keep content accessible on smaller screens */
+
+        @media (max-width: 768px) {
+
+            .logout-container {
+
+                padding: 10px;
+
+            }
+
+
+            #logout-btn {
+
+                padding: 10px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+
+        <a class="brand" href="#" data-view="dashboard">
+
+            <span class="brand-icon">♧</span>
+
+
+            <span>
+
+                Food<span class="brand-light">Bridge</span>
+
+                <small>COMMUNITY FOOD RESCUE</small>
+
+            </span>
+
+        </a>
+
+
+        <p class="nav-heading">WORKSPACE</p>
+
+
+        <nav class="navigation">
+
+            <button class="nav-link active" data-view="dashboard">
+
+                ▦ <span>Dashboard</span>
+
+            </button>
+
+
+            <button class="nav-link" data-view="discover">
+
+                ⌕ <span>Find Food</span>
+
+            </button>
+
+
+            <button class="nav-link" data-view="donate">
+
+                ＋ <span>Donate Food</span>
+
+            </button>
+
+
+            <button class="nav-link" data-view="donations">
+
+                ▤ <span>My Donations</span>
+
+            </button>
+
+
+            <button class="nav-link" data-view="requests">
+
+                ↗ <span>Food Requests</span>
+
+            </button>
+
+        </nav>
+
+
+        <!-- SIDEBAR BOTTOM -->
+
+        <div class="sidebar-bottom">
+
+
+            <div class="mission-card">
+
+                <span class="mission-icon">♡</span>
+
+                <h3>Every meal matters.</h3>
+
+                <p>
+
+                    Good food belongs on a plate,
+
+                    not in a landfill.
+
+                </p>
+
+            </div>
+
+
+            <div class="profile">
+
+                <div class="avatar" id="profile-avatar">U</div>
+
+
+                <div>
+
+                    <strong id="profile-name">Community Member</strong>
+
+                    <small id="profile-role">FoodBridge Member</small>
+
+                </div>
+
+
+                <span class="online-dot"></span>
+
+            </div>
+
+
+            <!-- LOGOUT BUTTON -->
+            <div class="logout-container">
+                <form action="{{ url_for('logout') }}" method="POST">
+                    <button type="submit" id="logout-btn">
+                        <span aria-hidden="true">↪</span>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <div class="eyebrow">COMMUNITY FOOD RESCUE</div>
+
+                <h1 id="page-title">Dashboard</h1>
+
+            </div>
+
+
+            <button
+
+                class="primary-button top-donate"
+
+                data-go="donate">
+
+                ＋ Donate Food
+
+            </button>
+
+        </header>
+
+
+        <!-- NOTIFICATIONS -->
+
+        <div
+
+            id="toast"
+
+            class="toast"
+
+            role="status"
+
+            aria-live="polite">
+
+        </div>
+
+
+        <!-- DASHBOARD -->
+
+        <section class="view active" id="dashboard">
+
+
+            <div class="welcome">
+
+                <div>
+
+                    <span class="welcome-tag">
+
+                        SMALL ACTIONS, BIG IMPACT
+
+                    </span>
+
+
+                    <h2>Good food. Better future.</h2>
+
+
+                    <p>
+
+                        Connect surplus food with people who need it.
+
+                    </p>
+
+
+                    <button class="white-button" data-go="discover">
+
+                        Explore available food →
+
+                    </button>
+
+                </div>
+
+
+                <div class="welcome-art" aria-hidden="true">🥗</div>
+
+
+                <span class="decor decor-one"></span>
+
+                <span class="decor decor-two"></span>
+
+            </div>
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>Your impact at a glance</h2>
+
+                    <p>
+
+                        Every donation brings us closer to zero food waste.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATISTICS -->
+
+            <div class="stats-grid">
+
+
+                <article class="stat-card">
+
+                    <div class="stat-top">
+
+                        <span>Food donations</span>
+
+                        <span class="stat-icon green">♧</span>
+
+                    </div>
+
+
+                    <strong id="stat-donations">0</strong>
+
+                    <small>Total listed donations</small>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <div class="stat-top">
+
+                        <span>Meals available</span>
+
+                        <span class="stat-icon yellow">♨</span>
+
+                    </div>
+
+
+                    <strong id="stat-meals">0</strong>
+
+                    <small>Servings currently available</small>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <div class="stat-top">
+
+                        <span>Requests</span>
+
+                        <span class="stat-icon blue">↗</span>
+
+                    </div>
+
+
+                    <strong id="stat-requests">0</strong>
+
+                    <small>Total food requests</small>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <div class="stat-top">
+
+                        <span>Completed</span>
+
+                        <span class="stat-icon green">✓</span>
+
+                    </div>
+
+
+                    <strong id="stat-completed">0</strong>
+
+                    <small>Successful distributions</small>
+
+                </article>
+
+
+            </div>
+
+
+            <!-- RECENT FOOD -->
+
+            <div class="section-heading section-heading-row">
+
+                <div>
+
+                    <h2>Recently listed food</h2>
+
+                    <p>
+
+                        Discover food available in your community.
+
+                    </p>
+
+                </div>
+
+
+                <button class="text-button" data-go="discover">
+
+                    View all →
+
+                </button>
+
+            </div>
+
+
+            <div id="recent-listings" class="food-grid"></div>
+
+
+            <div class="tip-banner">
+
+                <span>💚</span>
+
+
+                <div>
+
+                    <strong>Have extra food today?</strong>
+
+                    <p>
+
+                        Share it with your community instead of
+
+                        letting it go to waste.
+
+                    </p>
+
+                </div>
+
+
+                <button class="outline-button" data-go="donate">
+
+                    List food
+
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- FIND FOOD -->
+
+        <section class="view" id="discover">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>Available food</h2>
+
+                    <p>
+
+                        Find surplus food that can be shared
+
+                        with your community.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-bar">
+
+
+                <input
+
+                    id="search-input"
+
+                    type="search"
+
+                    placeholder="Search food or location..."
+
+                    aria-label="Search food or location">
+
+
+                <select
+
+                    id="category-filter"
+
+                    aria-label="Filter by food category">
+
+
+                    <option value="">All categories</option>
+
+                    <option>Cooked Meals</option>
+
+                    <option>Bakery</option>
+
+                    <option>Fruits &amp; Vegetables</option>
+
+                    <option>Packaged Food</option>
+
+                    <option>Dairy</option>
+
+                    <option>Other</option>
+
+
+                </select>
+
+            </div>
+
+
+            <p id="listing-count" class="result-count"></p>
+
+
+            <div id="all-listings" class="food-grid"></div>
+
+
+        </section>
+
+
+        <!-- DONATE FOOD -->
+
+        <section class="view" id="donate">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>Share your surplus food</h2>
+
+                    <p>
+
+                        Provide the details so a receiver can
+
+                        arrange collection.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="donation-form" class="form-card">
+
+
+                <div class="form-section-title">
+
+                    <span>01</span>
+
+
+                    <div>
+
+                        <h3>Food details</h3>
+
+                        <p>Tell us what you would like to donate.</p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <label>
+
+                        Food name *
+
+                        <input
+
+                            name="name"
+
+                            required
+
+                            maxlength="80"
+
+                            placeholder="e.g. Fresh vegetable pulao">
+
+                    </label>
+
+
+                    <label>
+
+                        Food category *
+
+
+                        <select name="category" required>
+
+                            <option value="">Select category</option>
+
+                            <option>Cooked Meals</option>
+
+                            <option>Bakery</option>
+
+                            <option>Fruits &amp; Vegetables</option>
+
+                            <option>Packaged Food</option>
+
+                            <option>Dairy</option>
+
+                            <option>Other</option>
+
+                        </select>
+
+                    </label>
+
+
+                    <label>
+
+                        Quantity / description *
+
+                        <input
+
+                            name="quantity"
+
+                            required
+
+                            maxlength="80"
+
+                            placeholder="e.g. 5 containers">
+
+                    </label>
+
+
+                    <label>
+
+                        Number of servings *
+
+                        <input
+
+                            name="servings"
+
+                            required
+
+                            type="number"
+
+                            min="1"
+
+                            max="100000"
+
+                            step="1"
+
+                            placeholder="e.g. 20">
+
+                    </label>
+
+
+                </div>
+
+
+                <div class="form-section-title">
+
+                    <span>02</span>
+
+
+                    <div>
+
+                        <h3>Pickup information</h3>
+
+                        <p>
+
+                            Help the receiver collect the food on time.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <label>
+
+                        Pickup location *
+
+                        <input
+
+                            name="location"
+
+                            required
+
+                            maxlength="150"
+
+                            placeholder="Area, city or pickup address">
+
+                    </label>
+
+
+                    <label>
+
+                        Donor name *
+
+                        <input
+
+                            name="donor"
+
+                            required
+
+                            maxlength="80"
+
+                            placeholder="Person or organization name">
+
+                    </label>
+
+
+                    <label>
+
+                        Contact information *
+
+                        <input
+
+                            name="contact"
+
+                            required
+
+                            maxlength="100"
+
+                            placeholder="Phone or email for coordination">
+
+                    </label>
+
+
+                    <label>
+
+                        Safe-use deadline *
+
+                        <input
+
+                            name="deadline"
+
+                            required
+
+                            type="datetime-local">
+
+                    </label>
+
+
+                    <label class="full-width">
+
+                        Food preparation / storage notes
+
+
+                        <textarea
+
+                            name="notes"
+
+                            rows="3"
+
+                            maxlength="500"
+
+                            placeholder="Preparation time, storage conditions, allergens, etc.">
+
+                        </textarea>
+
+                    </label>
+
+
+                </div>
+
+
+                <div class="safety-note">
+
+                    ⚠️ Only list food that can be safely donated.
+
+                    Provide accurate preparation, storage, allergen,
+
+                    and deadline information. Do not list food that
+
+                    is spoiled or unsafe.
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button type="reset" class="outline-button">
+
+                        Clear form
+
+                    </button>
+
+
+                    <button type="submit" class="primary-button">
+
+                        Publish donation →
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+        <!-- MY DONATIONS -->
+
+        <section class="view" id="donations">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>My donations</h2>
+
+                    <p>
+
+                        Manage listings and update collection status.
+
+                    </p>
+
+                </div>
+
+
+                <button class="primary-button" data-go="donate">
+
+                    ＋ Add donation
+
+                </button>
+
+            </div>
+
+
+            <div id="my-donations" class="management-list"></div>
+
+
+        </section>
+
+
+        <!-- FOOD REQUESTS -->
+
+        <section class="view" id="requests">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>Food requests</h2>
+
+                    <p>
+
+                        Review requests and manage food distribution.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="request-list" class="management-list"></div>
+
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="footer">
+
+            <span>
+
+                FoodBridge · Community Food Waste Reduction Platform
+
+            </span>
+
+
+            <span>Share food. Spread kindness. 🌱</span>
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+<!-- EXISTING FRONTEND JAVASCRIPT -->
+<script src="{{ url_for('static', filename='script.js') }}" defer></script>
+
+</body>
+
+</html>

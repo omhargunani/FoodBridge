@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodBridge | Admin Dashboard</title>
+
+    <style>
+        :root {
+            --primary: #16845b;
+            --primary-dark: #106b48;
+            --background: #f4f7f5;
+            --surface: #ffffff;
+            --text: #202a25;
+            --muted: #6b7770;
+            --border: #e2e9e4;
+            --danger: #d64545;
+            --warning: #d99519;
+            --success: #16845b;
+            --shadow: 0 5px 20px rgba(22, 60, 40, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .layout {
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 245px;
+            padding: 26px 18px;
+            background: #123b2c;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 4px 8px 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #d9f4e5;
+            color: #123b2c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+        }
+
+        .brand h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .brand p {
+            margin: 4px 0 0;
+            color: #b8d5c5;
+            font-size: 12px;
+        }
+
+        .nav-title {
+            margin: 28px 10px 12px;
+            color: #9fc2ae;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 13px 14px;
+            margin-bottom: 6px;
+            border-radius: 9px;
+            color: #e5f1e9;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255,255,255,0.13);
+            color: white;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #d9f4e5;
+            color: #123b2c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .admin-profile strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .admin-profile small {
+            display: block;
+            margin-top: 4px;
+            color: #b8d5c5;
+        }
+
+        .logout-button {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 8px;
+            background: transparent;
+            color: white;
+            font-size: 14px;
+        }
+
+        .logout-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .topbar p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .date-label {
+            color: var(--muted);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 30px 0 16px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: 19px;
+        }
+
+        .section-heading p {
+            margin: 6px 0 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .stat-card {
+            padding: 22px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #e4f5eb;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+        }
+
+        .stat-value {
+            margin-top: 17px;
+            font-size: 31px;
+            font-weight: 700;
+        }
+
+        .stat-description {
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .panel-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .panel-header p {
+            margin: 6px 0 0;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-input,
+        .filter-select {
+            min-width: 150px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            color: var(--text);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .search-input:focus,
+        .filter-select:focus {
+            border-color: var(--primary);
+        }
+
+        .refresh-button {
+            padding: 10px 13px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .refresh-button:hover {
+            background: #f2f7f3;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        thead {
+            background: #f8faf8;
+        }
+
+        th {
+            padding: 14px 20px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-top: 1px solid #edf1ee;
+            font-size: 13px;
+        }
+
+        tbody tr:hover {
+            background: #fbfdfb;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e4f5eb;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .user-name {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .user-email {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .role-admin {
+            color: #6741a5;
+            background: #f0e9fc;
+        }
+
+        .role-donor {
+            color: #1768a5;
+            background: #e7f3ff;
+        }
+
+        .role-ngo {
+            color: #087c69;
+            background: #e1f7f0;
+        }
+
+        .role-recipient {
+            color: #94620c;
+            background: #fff3d5;
+        }
+
+        .role-volunteer {
+            color: #9b4b0a;
+            background: #fff0e1;
+        }
+
+        .status-active {
+            color: #147747;
+            background: #e1f6e9;
+        }
+
+        .status-suspended {
+            color: #b52c2c;
+            background: #fde8e8;
+        }
+
+        .action-button {
+            padding: 8px 11px;
+            border-radius: 7px;
+            border: 1px solid var(--border);
+            background: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .action-button.suspend {
+            color: var(--danger);
+            border-color: #f3cccc;
+        }
+
+        .action-button.activate {
+            color: var(--success);
+            border-color: #c8e9d5;
+        }
+
+        .action-button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            padding: 35px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .notice {
+            display: none;
+            padding: 13px 16px;
+            margin-bottom: 18px;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .notice.success {
+            display: block;
+            color: #11683e;
+            background: #e1f6e9;
+            border: 1px solid #c3e8d0;
+        }
+
+        .notice.error {
+            display: block;
+            color: #a12a2a;
+            background: #fde9e9;
+            border: 1px solid #f4cccc;
+        }
+
+        .loading {
+            padding: 30px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .footer-note {
+            margin-top: 25px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .main {
+                padding: 22px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+                padding: 16px;
+            }
+
+            .brand {
+                padding-bottom: 15px;
+            }
+
+            .nav-title {
+                margin-top: 18px;
+            }
+
+            .sidebar-footer {
+                margin-top: 15px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 18px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .topbar h1 {
+                font-size: 23px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 18px;
+            }
+
+            .section-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .panel-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .toolbar {
+                width: 100%;
+            }
+
+            .search-input,
+            .filter-select {
+                flex: 1;
+                min-width: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">♻</div>
+            <div>
+                <h2>FoodBridge</h2>
+                <p>Admin Control Center</p>
+            </div>
+        </div>
+
+        <div class="nav-title">Management</div>
+
+        <a class="nav-link active" href="#overview">▦ &nbsp; Overview</a>
+        <a class="nav-link" href="#users">♙ &nbsp; User Management</a>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar">A</div>
+                <div>
+                    <strong>Administrator</strong>
+                    <small>Full access</small>
+                </div>
+            </div>
+
+            <form action="{{ url_for('logout') }}" method="POST">
+                <button class="logout-button" type="submit">
+                    ↪ &nbsp; Sign Out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Monitor platform activity and manage user accounts.</p>
+            </div>
+            <div class="date-label" id="current-date"></div>
+        </header>
+
+        <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+        <section id="overview">
+            <div class="section-heading">
+                <div>
+                    <h2>Platform Overview</h2>
+                    <p>Live statistics from your FoodBridge database.</p>
+                </div>
+
+                <button class="refresh-button" id="refresh-button" type="button">
+                    ↻ Refresh Data
+                </button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Total Users</span>
+                        <span class="stat-icon">♙</span>
+                    </div>
+                    <div class="stat-value" id="stat-users">—</div>
+                    <div class="stat-description">Registered platform accounts</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Total Donations</span>
+                        <span class="stat-icon">♧</span>
+                    </div>
+                    <div class="stat-value" id="stat-donations">—</div>
+                    <div class="stat-description">Food donations recorded</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Pickup Requests</span>
+                        <span class="stat-icon">⇄</span>
+                    </div>
+                    <div class="stat-value" id="stat-requests">—</div>
+                    <div class="stat-description">Requests made by receivers</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Completed Donations</span>
+                        <span class="stat-icon">✓</span>
+                    </div>
+                    <div class="stat-value" id="stat-completed">—</div>
+                    <div class="stat-description">Donations marked completed</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="users">
+            <div class="section-heading">
+                <div>
+                    <h2>User Management</h2>
+                    <p>View registered accounts and activate or suspend users.</p>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>Registered Users</h3>
+                        <p id="user-count">Loading user accounts...</p>
+                    </div>
+
+                    <div class="toolbar">
+                        <input
+                            class="search-input"
+                            id="user-search"
+                            type="search"
+                            placeholder="Search name or email..."
+                            aria-label="Search users"
+                        >
+
+                        <select
+                            class="filter-select"
+                            id="role-filter"
+                            aria-label="Filter by role"
+                        >
+                            <option value="all">All roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="donor">Donor</option>
+                            <option value="ngo">NGO</option>
+                            <option value="recipient">Recipient</option>
+                            <option value="volunteer">Volunteer</option>
+                        </select>
+
+                        <select
+                            class="filter-select"
+                            id="status-filter"
+                            aria-label="Filter by account status"
+                        >
+                            <option value="all">All statuses</option>
+                            <option value="active">Active</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Account Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="users-table-body">
+                        <tr>
+                            <td colspan="4" class="loading">
+                                Loading users from database...
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="empty-users" class="empty-state" hidden>
+                    No users match your search.
+                </div>
+            </div>
+        </section>
+
+        <div class="footer-note">
+            FoodBridge Admin Dashboard · Community Food Waste Reduction Platform
+        </div>
+    </main>
+</div>
+
+<script>
+    const usersTableBody = document.getElementById("users-table-body");
+    const userSearch = document.getElementById("user-search");
+    const roleFilter = document.getElementById("role-filter");
+    const statusFilter = document.getElementById("status-filter");
+    const userCount = document.getElementById("user-count");
+    const emptyUsers = document.getElementById("empty-users");
+    const notice = document.getElementById("notice");
+    const refreshButton = document.getElementById("refresh-button");
+
+    let users = [];
+    let currentAdminId = null;
+    let noticeTimer = null;
+
+    document.getElementById("current-date").textContent =
+        new Date().toLocaleDateString(undefined, {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
+
+    function showNotice(message, type = "success") {
+        notice.textContent = message;
+        notice.className = "notice " + type;
+
+        if (noticeTimer) {
+            clearTimeout(noticeTimer);
+        }
+
+        noticeTimer = setTimeout(() => {
+            notice.className = "notice";
+            notice.textContent = "";
+        }, 5000);
+    }
+
+    async function apiFetch(url, options = {}) {
+        const response = await fetch(url, {
+            credentials: "same-origin",
+            ...options,
+            headers: {
+                ...(options.headers || {}),
+                ...(options.body ? { "Content-Type": "application/json" } : {})
+            }
+        });
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            // The server may return a non-JSON error page.
+        }
+
+        if (response.status === 401) {
+            window.location.href = "{{ url_for('login') }}";
+            throw new Error("Your session has expired. Please log in again.");
+        }
+
+        if (!response.ok) {
+            throw new Error(data.error || data.message || "The request failed.");
+        }
+
+        return data;
+    }
+
+    async function loadCurrentSession() {
+        try {
+            const data = await apiFetch("/api/session");
+
+            if (!data.authenticated) {
+                window.location.href = "{{ url_for('login') }}";
+                return;
+            }
+
+            if (data.user.role !== "admin") {
+                window.location.href = "{{ url_for('home') }}";
+                return;
+            }
+
+            currentAdminId = data.user.id;
+
+            const name = data.user.name || "Administrator";
+            document.querySelector(".admin-profile strong").textContent = name;
+            document.querySelector(".avatar").textContent =
+                name.trim().charAt(0).toUpperCase() || "A";
+        } catch (error) {
+            showNotice(error.message, "error");
+        }
+    }
+
+    async function loadSummary() {
+        const data = await apiFetch("/api/admin/summary");
+
+        document.getElementById("stat-users").textContent =
+            Number(data.users ?? 0).toLocaleString();
+
+        document.getElementById("stat-donations").textContent =
+            Number(data.donations ?? 0).toLocaleString();
+
+        document.getElementById("stat-requests").textContent =
+            Number(data.requests ?? 0).toLocaleString();
+
+        document.getElementById("stat-completed").textContent =
+            Number(data.completed ?? 0).toLocaleString();
+    }
+
+    async function loadUsers() {
+        usersTableBody.innerHTML = `
+            <tr>
+                <td colspan="4" class="loading">Loading users...</td>
+            </tr>
+        `;
+
+        emptyUsers.hidden = true;
+
+        const data = await apiFetch("/api/admin/users");
+
+        if (!Array.isArray(data)) {
+            throw new Error("The server returned an unexpected user list.");
+        }
+
+        users = data;
+        renderUsers();
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        })[character]);
+    }
+
+    function getFilteredUsers() {
+        const query = userSearch.value.trim().toLowerCase();
+        const selectedRole = roleFilter.value;
+        const selectedStatus = statusFilter.value;
+
+        return users.filter(user => {
+            const name = (user.name || "").toLowerCase();
+            const email = (user.email || "").toLowerCase();
+
+            const matchesSearch =
+                name.includes(query) || email.includes(query);
+
+            const matchesRole =
+                selectedRole === "all" || user.role === selectedRole;
+
+            const matchesStatus =
+                selectedStatus === "all" ||
+                user.account_status === selectedStatus;
+
+            return matchesSearch && matchesRole && matchesStatus;
+        });
+    }
+
+    function renderUsers() {
+        const filteredUsers = getFilteredUsers();
+
+        userCount.textContent =
+            `${filteredUsers.length} of ${users.length} user account(s)`;
+
+        emptyUsers.hidden = filteredUsers.length !== 0;
+
+        if (filteredUsers.length === 0) {
+            usersTableBody.innerHTML = "";
+            return;
+        }
+
+        usersTableBody.innerHTML = filteredUsers.map(user => {
+            const name = escapeHtml(user.name || "Unnamed user");
+            const email = escapeHtml(user.email || "");
+            const role = String(user.role || "recipient").toLowerCase();
+            const status = String(user.account_status || "active").toLowerCase();
+            const initial = escapeHtml(
+                (user.name || "?").trim().charAt(0).toUpperCase()
+            );
+
+            const isCurrentAdmin =
+                currentAdminId !== null && Number(user.id) === Number(currentAdminId);
+
+            const isSuspended = status === "suspended";
+
+            let actionButton = "";
+
+            if (isCurrentAdmin) {
+                actionButton = `
+                    <button class="action-button" type="button" disabled
+                        title="You cannot change your own account status">
+                        Current account
+                    </button>
+                `;
+            } else if (isSuspended) {
+                actionButton = `
+                    <button
+                        class="action-button activate"
+                        type="button"
+                        data-user-id="${Number(user.id)}"
+                        data-new-status="active">
+                        Activate
+                    </button>
+                `;
+            } else {
+                actionButton = `
+                    <button
+                        class="action-button suspend"
+                        type="button"
+                        data-user-id="${Number(user.id)}"
+                        data-new-status="suspended">
+                        Suspend
+                    </button>
+                `;
+            }
+
+            return `
+                <tr>
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar">${initial}</div>
+                            <div>
+                                <div class="user-name">${name}</div>
+                                <div class="user-email">${email}</div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <span class="badge role-${escapeHtml(role)}">
+                            ${escapeHtml(role)}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="badge status-${escapeHtml(status)}">
+                            ${escapeHtml(status)}
+                        </span>
+                    </td>
+
+                    <td>${actionButton}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    async function changeUserStatus(userId, newStatus, button) {
+        const user = users.find(item => Number(item.id) === Number(userId));
+
+        if (!user) {
+            showNotice("User was not found in the current list.", "error");
+            return;
+        }
+
+        const actionWord = newStatus === "suspended" ? "suspend" : "activate";
+
+        const confirmed = window.confirm(
+            `Are you sure you want to ${actionWord} ${user.name || "this user"}?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = "Updating...";
+
+        try {
+            // IMPORTANT: app.py expects the JSON key to be "status".
+            const result = await apiFetch(
+                `/api/admin/users/${Number(userId)}/status`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        status: newStatus
+                    })
+                }
+            );
+
+            showNotice(result.message || `User account ${newStatus}.`, "success");
+
+            await Promise.all([
+                loadUsers(),
+                loadSummary()
+            ]);
+        } catch (error) {
+            showNotice(error.message, "error");
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+
+    usersTableBody.addEventListener("click", async event => {
+        const button = event.target.closest("button[data-user-id]");
+
+        if (!button || button.disabled) {
+            return;
+        }
+
+        const userId = button.dataset.userId;
+        const newStatus = button.dataset.newStatus;
+
+        if (!userId || !["active", "suspended"].includes(newStatus)) {
+            return;
+        }
+
+        await changeUserStatus(userId, newStatus, button);
+    });
+
+    userSearch.addEventListener("input", renderUsers);
+    roleFilter.addEventListener("change", renderUsers);
+    statusFilter.addEventListener("change", renderUsers);
+
+    refreshButton.addEventListener("click", async () => {
+        refreshButton.disabled = true;
+        refreshButton.textContent = "Refreshing...";
+
+        try {
+            await Promise.all([
+                loadSummary(),
+                loadUsers()
+            ]);
+
+            showNotice("Dashboard data refreshed.", "success");
+        } catch (error) {
+            showNotice(error.message, "error");
+        } finally {
+            refreshButton.disabled = false;
+            refreshButton.textContent = "↻ Refresh Data";
+        }
+    });
+
+    async function initializeDashboard() {
+        try {
+            await loadCurrentSession();
+
+            if (currentAdminId === null) {
+                return;
+            }
+
+            await Promise.all([
+                loadSummary(),
+                loadUsers()
+            ]);
+        } catch (error) {
+            showNotice(error.message, "error");
+        }
+    }
+
+    initializeDashboard();
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | FoodBridge</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main style="max-width: 460px; margin: 50px auto; padding: 24px;">
+        <h1>Join FoodBridge 🌱</h1>
+        <p>Create an account to help reduce food waste.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p role="status">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" class="form-card">
+            <label>
+                Full name
+                <input type="text" name="name" maxlength="80" required>
+            </label>
+
+            <label>
+                Email
+                <input type="email" name="email" maxlength="120" autocomplete="email" required>
+            </label>
+
+            <label>
+                Password (minimum 8 characters)
+                <input type="password" name="password" minlength="8" autocomplete="new-password" required>
+            </label>
+
+            <label>
+                Account type
+                <select name="role" required>
+                    <option value="donor">Food Donor</option>
+                    <option value="ngo">NGO</option>
+                    <option value="volunteer">Volunteer</option>
+                    <option value="recipient">Food Recipient</option>
+                </select>
+            </label>
+
+            <button type="submit" class="primary-button">Create account</button>
+        </form>
+
+        <p>Already registered? <a href="{{ url_for('login') }}">Log in</a></p>
+        <p><a href="{{ url_for('home') }}">Return to FoodBridge</a></p>
+    </main>
+</body>
+</html>
