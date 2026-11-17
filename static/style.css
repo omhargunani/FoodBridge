@@ -445,3 +445,54 @@ textarea { resize: vertical; }
   .tip-banner { align-items: flex-start; flex-wrap: wrap; }
   .tip-banner .outline-button { margin-left: 39px; }
 }
+/* Login and Register Page */
+
+body:has(.form-card) {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+body:has(.form-card) main {
+    width: 100%;
+    max-width: 460px !important;
+    margin: 0 auto !important;
+    padding: 35px !important;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+body:has(.form-card) main h1 {
+    color: var(--green-dark);
+    font-size: 28px;
+    margin-top: 0;
+}
+
+body:has(.form-card) main > p {
+    color: var(--muted);
+}
+
+body:has(.form-card) .form-card {
+    padding: 20px 0;
+    border: none;
+    box-shadow: none;
+}
+
+body:has(.form-card) .form-card label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+body:has(.form-card) .form-card input {
+    margin-top: 7px;
+}
+
+body:has(.form-card) .form-card button {
+    width: 100%;
+    padding: 13px;
+}
